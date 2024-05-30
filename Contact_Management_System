@@ -1,0 +1,108 @@
+import json
+
+class Contact:
+  """
+  This class represents a single contact with attributes for name, phone number, and email address.
+  """
+  def __init__(self, name, phone, email):
+    """
+    This constructor method is called whenever a new Contact object is created.
+    It takes three arguments: name, phone, and email, and assigns them to the corresponding attributes of the object.
+    """
+    self.name = name
+    self.phone = phone
+    self.email = email
+
+class ContactManager:
+  """
+  This class manages a list of contacts and provides methods for adding, viewing, editing, deleting, saving, and loading contacts.
+  """
+  def __init__(self):
+    """
+    This constructor method initializes an empty list called self.contacts to store the contact objects.
+    """
+    self.contacts = []
+
+  def add_contact(self, name, phone, email):
+    """
+    This method adds a new contact to the manager's list.
+      - Creates a new Contact object using the provided details.
+      - Appends the new Contact object to the self.contacts list.
+    """
+    contact = Contact(name, phone, email)
+    self.contacts.append(contact)
+
+  def view_contacts(self):
+    """
+    This method displays a list of all the saved contacts in the manager's list.
+      - Checks if the list is empty.
+        - Prints a message if there are no contacts.
+      - Iterates through the list and prints each contact's details in a formatted way.
+    """
+    if not self.contacts:
+      print("No contacts available.")
+    else:
+      for i, contact in enumerate(self.contacts):
+        print(f"Contact {i+1}:")
+        print(f"Name: {contact.name}")
+        print(f"Phone: {contact.phone}")
+        print(f"Email: {contact.email}")
+        print()
+
+  def edit_contact(self, index, name=None, phone=None, email=None):
+    """
+    This method edits an existing contact based on its index in the list.
+      - Takes the index as a required argument and optional arguments for name, phone, and email.
+      - Checks for a valid index.
+      - Allows updating any or all of these details for the specified contact.
+    """
+    if index < 1 or index > len(self.contacts):
+      print("Invalid contact index.")
+      return
+
+    contact = self.contacts[index - 1]
+    if name:
+      contact.name = name
+    if phone:
+      contact.phone = phone
+    if email:
+      contact.email = email
+
+  def delete_contact(self, index):
+    """
+    This method deletes a contact from the list based on its index.
+      - Checks for a valid index.
+      - Removes the contact object at that index from the self.contacts list.
+    """
+    if index < 1 or index > len(self.contacts):
+      print("Invalid contact index.")
+      return
+
+    del self.contacts[index - 1]
+
+  def save_contacts(self, filename):
+    """
+    This method saves the current list of contacts to a JSON file.
+      - Opens the file in write mode.
+      - Uses the json.dump function to write a JSON representation of the list of contact dictionaries (obtained using vars(contact)) to the file.
+    """
+    with open(filename, 'w') as file:
+      json.dump([vars(contact) for contact in self.contacts], file)
+
+  def load_contacts(self, filename):
+    """
+    This method loads contacts from a JSON file.
+      - Opens the file in read mode.
+      - Uses the json.load function to read the JSON data.
+      - Iterates through the loaded data (which is a list of dictionaries) and creates new Contact objects using the Contact(**contact) syntax, effectively reconstructing the contact list from the saved data.
+    """
+    with open(filename, 'r') as file:
+      data = json.load(file)
+      self.contacts = [Contact(**contact) for contact in data]
+
+def main():
+  """
+  This function is the entry point of the program.
+    - Creates a ContactManager object.
+    - Enters an infinite loop to keep the program running until the user exits.
+    - Inside the loop, displays
